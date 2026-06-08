@@ -18,7 +18,7 @@ class Vehicle(models.Model):
         return self.plate
     
 
-class ParkingAcess(models.Model):
+class ParkingAccess(models.Model):
     vehicle = models.ForeignKey(
         Vehicle,
         on_delete=models.CASCADE,
