@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import Vehicle, ParkingAccess
 from django.utils import timezone
 from .serializers import ParkingAccessSerializer
-from rest_framework_parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.files.storage import default_storage
 from .services.plate_ocr_service import PlateOCRService
 
@@ -104,22 +104,21 @@ class PlateOCRView(APIView):
 
         if not image:
             return Response(
-                {"error": "Imagem obrigatória para registro!"},
+                {"error": "Imagem obrigatória"},
                 status=400
             )
-        
+
         image_path = default_storage.save(f"plates/{image.name}", image)
-        full_image_path = default_storage.paht(image_path)
+        full_image_path = default_storage.path(image_path)
 
-        plate = PlateOCRService.extract_plate(full_image_path)
+        plate, _ = PlateOCRService.extract_plate(full_image_path)
 
-        if not plate:
+        if plate is None:
             return Response(
-                {"error": "Nenhuma placa identificada"},
+                {"error": "Nenhuma placa brasileira identificada"},
                 status=400
             )
-        
+
         return Response({
-            "message": "Placa identificada com sucesso",
             "plate": plate
         })
