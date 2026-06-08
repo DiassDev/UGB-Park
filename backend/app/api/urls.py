@@ -4,7 +4,8 @@ from .views import (
     LoginView,
     VehicleEntryView,
     VehicleExitView,
-    HistoryView
+    HistoryView,
+    PlateOCRView
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path("entrada/", VehicleEntryView.as_view()),
     path("saida/", VehicleExitView.as_view()),
     path("historico/", HistoryView.as_view()),
+    path("ocr/", PlateOCRView.as_view()),
 ]
