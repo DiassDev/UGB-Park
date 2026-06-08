@@ -8,6 +8,44 @@ from .serializers import ParkingAccessSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.files.storage import default_storage
 from .services.plate_ocr_service import PlateOCRService
+from django.contrib.auth.models import User
+
+
+
+class RegisterView(APIView):
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        email = request.data.get("email", "")
+
+        if not username or not password:
+            return Response(
+                {"error": "Nome de usuário e senha são obrigatórios"},
+                status=400
+            )
+        
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Esse usuário já existe"},
+                status=400
+            )
+        
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        return Response({
+            "message": "Usuário cadastrado com sucesso",
+            "user_id": user.id,
+            "username": user.username
+        },
+        status=201
+        )
+
+
 
 class LoginView(APIView):
 
