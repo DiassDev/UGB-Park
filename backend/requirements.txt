@@ -1,2 +1,5 @@
 django
 djangorestframework
+pillow
+easyocr
+opencv-python
