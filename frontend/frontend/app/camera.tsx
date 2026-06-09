@@ -18,7 +18,6 @@ export default function CameraScreen() {
   const [loading, setLoading] = useState(false);
 
   const { type } = useLocalSearchParams();
-
   const actionType = type === "saida" ? "saida" : "entrada";
 
   async function handleTakePicture() {
@@ -38,7 +37,7 @@ export default function CameraScreen() {
 
       formData.append("image", {
         uri: photo.uri,
-        name: "plate.jpg",
+        name: `plate-${Date.now()}.jpg`,
         type: "image/jpeg",
       } as any);
 
@@ -47,6 +46,8 @@ export default function CameraScreen() {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      console.log("OCR RESPONSE:", ocrResponse.data);
 
       const plate = ocrResponse.data.plate;
 
@@ -71,8 +72,15 @@ export default function CameraScreen() {
 
       router.replace("/(tabs)");
     } catch (error: any) {
+      console.log("STATUS:", error?.response?.status);
+      console.log("DATA:", error?.response?.data);
+      console.log("MESSAGE:", error?.message);
+
       const message =
-        error?.response?.data?.error || "Não foi possível processar a placa.";
+        error?.response?.data?.error ||
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Não foi possível processar a placa.";
 
       Alert.alert("Erro", message);
     } finally {
@@ -133,6 +141,7 @@ export default function CameraScreen() {
 
           <View style={styles.scanArea}>
             <View style={styles.scanFrame} />
+
             <Text style={styles.scanText}>
               Posicione a placa dentro da área indicada
             </Text>
