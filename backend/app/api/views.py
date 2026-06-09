@@ -11,7 +11,6 @@ from .services.plate_ocr_service import PlateOCRService
 from django.contrib.auth.models import User
 
 
-
 class RegisterView(APIView):
 
     def post(self, request):
